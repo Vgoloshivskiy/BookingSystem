@@ -1,0 +1,112 @@
+:root {
+  --primary: #2f6fed;
+  --success: #1f9d55;
+  --danger: #d9534f;
+  --bg: #f5f6f8;
+  --card-bg: #ffffff;
+  --border: #e1e4e8;
+  --text: #1f2328;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border);
+}
+
+header h1 { font-size: 1.25rem; margin: 0; }
+
+main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  display: grid;
+  gap: 1.5rem;
+}
+
+#mainView { grid-template-columns: 1fr 2fr; }
+#myBookings { grid-column: 1 / -1; }
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.25rem;
+}
+
+.hidden { display: none !important; }
+
+form { display: flex; flex-direction: column; gap: 0.5rem; }
+input, button {
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  font-size: 0.95rem;
+}
+button {
+  background: var(--primary);
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+button:hover { opacity: 0.9; }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.hint { color: #6a737d; font-size: 0.85rem; }
+
+ul { list-style: none; padding: 0; margin: 0; }
+li { padding: 0.4rem 0; border-bottom: 1px solid var(--border); }
+li:last-child { border-bottom: none; }
+
+.resource-item {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+}
+.resource-item:hover { color: var(--primary); }
+
+#slotGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.5rem;
+}
+
+.slot {
+  padding: 0.6rem;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 0.85rem;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+.slot:hover:not(.booked) { transform: translateY(-2px); }
+.slot.free { background: #eaf4ea; border-color: var(--success); }
+.slot.booked { background: #fbeaea; border-color: var(--danger); cursor: not-allowed; color: #8a4a4a; }
+
+#toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1f2328;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  z-index: 10;
+}
+#toast.error { background: var(--danger); }
+#toast.success { background: var(--success); }

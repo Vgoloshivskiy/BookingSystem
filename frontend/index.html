@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meeting Room Booking</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Meeting Room Booking</h1>
+    <div id="authBar"></div>
+  </header>
+
+  <main id="app">
+    <section id="authView">
+      <div class="card">
+        <h2>Log in</h2>
+        <form id="loginForm">
+          <input type="email" name="email" placeholder="Email" required />
+          <input type="password" name="password" placeholder="Password" required />
+          <button type="submit">Log in</button>
+        </form>
+      </div>
+      <div class="card">
+        <h2>Register</h2>
+        <form id="registerForm">
+          <input type="text" name="displayName" placeholder="Display name" required />
+          <input type="email" name="email" placeholder="Email" required />
+          <input type="password" name="password" placeholder="Password" required />
+          <button type="submit">Register</button>
+        </form>
+      </div>
+      <p class="hint">Seeded admin account: admin@bookingsystem.local / Admin123!</p>
+    </section>
+
+    <section id="mainView" class="hidden">
+      <div id="resourceList" class="card">
+        <h2>Resources</h2>
+        <ul id="resources"></ul>
+        <div id="adminResourceForm" class="hidden">
+          <h3>New resource (admin)</h3>
+          <input id="newResourceName" placeholder="Name" />
+          <button id="createResourceBtn">Create</button>
+        </div>
+      </div>
+
+      <div id="scheduleView" class="card hidden">
+        <h2 id="scheduleTitle">Schedule</h2>
+        <div id="slotGrid"></div>
+      </div>
+
+      <div id="myBookings" class="card">
+        <h2>My bookings</h2>
+        <ul id="bookingsList"></ul>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="hidden"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
