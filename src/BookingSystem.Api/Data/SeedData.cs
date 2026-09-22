@@ -13,7 +13,16 @@ public static class SeedData
     public static async Task InitializeAsync(IServiceProvider services)
     {
         var db = services.GetRequiredService<ApplicationDbContext>();
-        await db.Database.MigrateAsync();
+        // NOTE: this repo does not ship EF Core migration files (the sandbox this repo
+        // was authored in had no .NET SDK to run `dotnet ef migrations add`), so
+        // EnsureCreatedAsync is used to build the schema directly from the current model
+        // instead of Database.MigrateAsync(). This works for a fresh database (a new
+        // Azure SQL Database, or a fresh SQLite file per test run) but does NOT support
+        // incremental schema evolution. Before evolving the model further, run:
+        //   dotnet ef migrations add InitialCreate --project src/BookingSystem.Api
+        // once, then switch this back to db.Database.MigrateAsync() and use
+        // `dotnet ef database update` for subsequent schema changes (see CLAUDE.md).
+        await db.Database.EnsureCreatedAsync();
 
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
         foreach (var role in new[] { Roles.Admin, Roles.User })

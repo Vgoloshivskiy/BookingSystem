@@ -58,11 +58,14 @@ dotnet run --project src/BookingSystem.Api
 # Run all tests, including the concurrency test
 dotnet test
 
-# Add an EF Core migration after changing an entity
+# Add an EF Core migration (do this once before relying on Migrate/database update -
+# see the note in Data/SeedData.cs; the repo currently uses EnsureCreatedAsync()
+# because no migration files have been generated yet)
 dotnet ef migrations add <Name> --project src/BookingSystem.Api
 
 # Apply migrations against Azure SQL (set Database:Provider=SqlServer and the
-# ConnectionStrings:SqlServer app setting first)
+# ConnectionStrings:SqlServer app setting first; also switch SeedData.cs from
+# EnsureCreatedAsync() to MigrateAsync() once migrations exist)
 dotnet ef database update --project src/BookingSystem.Api
 ```
 

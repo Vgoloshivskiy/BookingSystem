@@ -100,12 +100,17 @@ az webapp deploy \
   --type zip
 ```
 
-On first startup, `SeedData.InitializeAsync` runs `Database.MigrateAsync()`
-automatically, applying EF Core migrations and creating the roles / seed admin
-account / sample resources against the Azure SQL database — no manual migration step
-is required for first deploy, though for ongoing changes prefer running
-`dotnet ef database update` from CI as part of the release pipeline instead of relying
-on auto-migrate in production.
+On first startup, `SeedData.InitializeAsync` calls `Database.EnsureCreatedAsync()`,
+which builds the schema directly from the current EF Core model against the Azure SQL
+database (no migration files are required for this), then creates the roles / seed
+admin account / sample resources. This is fine for a first deploy to a fresh database.
+
+Before you evolve the data model further, switch to a proper migrations workflow:
+run `dotnet ef migrations add InitialCreate --project src/BookingSystem.Api` once,
+change `SeedData.cs` to call `Database.MigrateAsync()` instead of
+`EnsureCreatedAsync()`, and apply subsequent changes with
+`dotnet ef database update` (ideally from CI) rather than relying on
+auto-schema-creation in production.
 
 ## 7. Verify
 
