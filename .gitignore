@@ -1,0 +1,12 @@
+bin/
+obj/
+*.db
+*.db-shm
+*.db-wal
+publish/
+publish.zip
+.vs/
+.vscode/
+appsettings.*.local.json
+*.user
+node_modules/
