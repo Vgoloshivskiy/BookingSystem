@@ -1,0 +1,72 @@
+name: Build, test, and deploy to Azure
+
+# Runs on every push to main. The deploy job only runs if build-and-test succeeds,
+# so a broken build or a failing concurrency test blocks deployment automatically.
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: {}   # lets you trigger a deploy manually from the Actions tab
+
+env:
+  DOTNET_VERSION: '8.0.x'
+  # Set this to your Web App's name (from `az webapp create --name ...`).
+  AZURE_WEBAPP_NAME: booking-system-app-vgptreenbit
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Test (includes the required automated concurrency test)
+        run: dotnet test --no-build --configuration Release --verbosity normal
+
+      - name: Publish API
+        run: >
+          dotnet publish src/BookingSystem.Api/BookingSystem.Api.csproj
+          --no-build --configuration Release --output ./publish
+
+      - name: Fold the static frontend into wwwroot
+        # Program.cs serves wwwroot via UseDefaultFiles()/UseStaticFiles(), so the
+        # frontend and API are one deployable unit — no separate hosting needed.
+        run: |
+          mkdir -p ./publish/wwwroot
+          cp -r frontend/. ./publish/wwwroot/
+
+      - name: Upload deployment artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: webapp-package
+          path: ./publish
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: ${{ steps.deploy.outputs.webapp-url }}
+    steps:
+      - name: Download deployment artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: webapp-package
+          path: ./publish
+
+      - name: Deploy to Azure Web App
+        id: deploy
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ./publish

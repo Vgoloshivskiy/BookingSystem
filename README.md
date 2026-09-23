@@ -78,7 +78,8 @@ afterwards.
 ## Deploying to Azure
 
 See **`docs/DEPLOYMENT.md`** for the full `az` CLI walkthrough (SQL Database, SignalR
-Service, Web App, app settings, publish).
+Service, Web App, app settings, publish), and **`docs/CICD.md`** for the GitHub
+Actions pipeline that builds, tests, and deploys automatically on push to `main`.
 
 ## Development process
 
