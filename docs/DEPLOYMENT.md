@@ -14,21 +14,21 @@ az group create --name booking-system-rg --location eastus
 
 ```bash
 az sql server create \
-  --name booking-system-sql-<unique-suffix> \
+  --name booking-system-sql-vgptreenbit \
   --resource-group booking-system-rg \
-  --location eastus \
+  --location australiaeast \
   --admin-user sqladmin \
   --admin-password '<strong-password>'
 
 az sql server firewall-rule create \
   --resource-group booking-system-rg \
-  --server booking-system-sql-<unique-suffix> \
+  --server booking-system-sql-vgptreenbit \
   --name AllowAzureServices \
   --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
 
 az sql db create \
   --resource-group booking-system-rg \
-  --server booking-system-sql-<unique-suffix> \
+  --server booking-system-sql-vgptreenbit \
   --name BookingSystemDb \
   --service-objective Basic
 ```
@@ -37,7 +37,7 @@ az sql db create \
 
 ```bash
 az signalr create \
-  --name booking-system-signalr-<unique-suffix> \
+  --name booking-system-signalr-vgptreenbit \
   --resource-group booking-system-rg \
   --sku Free_F1 \
   --service-mode Default
@@ -49,12 +49,13 @@ az signalr create \
 az appservice plan create \
   --name booking-system-plan \
   --resource-group booking-system-rg \
-  --sku B1 --is-linux
+  --sku F1 --is-linux \
+  --location australiaeast
 
 az webapp create \
   --resource-group booking-system-rg \
   --plan booking-system-plan \
-  --name booking-system-app-<unique-suffix> \
+  --name booking-system-app-vgptreenbit \
   --runtime "DOTNETCORE:8.0"
 ```
 
@@ -68,12 +69,12 @@ deploy the frontend as a separate static Web App and set its origin in
 ## 5. Configure app settings
 
 ```bash
-SQL_CONN="Server=tcp:booking-system-sql-<unique-suffix>.database.windows.net,1433;Database=BookingSystemDb;User ID=sqladmin;Password=<strong-password>;Encrypt=true;"
-SIGNALR_CONN=$(az signalr key list --name booking-system-signalr-<unique-suffix> --resource-group booking-system-rg --query primaryConnectionString -o tsv)
+SQL_CONN="Server=tcp:booking-system-sql-vgptreenbit.database.windows.net,1433;Database=BookingSystemDb;User ID=sqladmin;Password=<strong-password>;Encrypt=true;"
+SIGNALR_CONN=$(az signalr key list --name booking-system-signalr-vgptreenbit --resource-group booking-system-rg --query primaryConnectionString -o tsv)
 
 az webapp config appsettings set \
   --resource-group booking-system-rg \
-  --name booking-system-app-<unique-suffix> \
+  --name booking-system-app-vgptreenbit \
   --settings \
     Database__Provider="SqlServer" \
     ConnectionStrings__SqlServer="$SQL_CONN" \
