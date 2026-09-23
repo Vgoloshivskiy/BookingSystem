@@ -2,7 +2,11 @@
 // directly (with the API running) without installing frontend tooling. Talks to the
 // ASP.NET Core API over REST + a SignalR hub for real-time slot updates.
 
-const API_BASE = window.API_BASE_URL || "http://localhost:5000";
+// Empty string = same origin as whatever served this page. That's correct once the
+// frontend is published into the API's wwwroot (see docs/DEPLOYMENT.md / CI workflow).
+// Override from the browser console (window.API_BASE_URL = "http://localhost:5000")
+// if you're running the frontend separately from the API during local development.
+const API_BASE = window.API_BASE_URL || "";
 
 const state = {
   token: localStorage.getItem("token") || null,

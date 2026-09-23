@@ -114,6 +114,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseDefaultFiles();  // serves wwwroot/index.html at "/"
+app.UseStaticFiles();   // serves the rest of the frontend (app.js, styles.css) from wwwroot
 app.UseCors("Frontend");
 app.UseAuthentication();
 app.UseAuthorization();
